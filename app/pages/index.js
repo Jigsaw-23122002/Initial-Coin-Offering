@@ -55,6 +55,11 @@ export default function Home() {
         NFT_CONTRACT_ABI,
         provider
       );
+      const tokenContract = new Contract(
+        TOKEN_CONTRACT_ADDRESS,
+        TOKEN_CONTRACT_ABI,
+        provider
+      );
       const signer = await getProviderOrSigner(true);
       const address = await signer.getAddress();
       const balance = await nftContract.balanceOf(address);
@@ -88,7 +93,7 @@ export default function Home() {
       );
 
       const signer = await getProviderOrSigner(true);
-      const address = signer.getAddress();
+      const address = await signer.getAddress();
       const balance = await tokenContract.balanceOf(address);
       setBalanceOfCryptoDevTokens(balance);
     } catch (err) {
@@ -120,7 +125,7 @@ export default function Home() {
         signer
       );
       const value = 0.001 * amount;
-      const tx = tokenContract.mint(amount, {
+      const tx = await tokenContract.mint(amount, {
         value: utils.parseEther(value.toString()),
       });
       setLoading(true);
@@ -164,7 +169,7 @@ export default function Home() {
         </div>
       );
     }
-    if (tokensToBeClaimed) {
+    if (tokensToBeClaimed>0) {
       return (
         <div>
           <div className={styles.description}>
@@ -200,7 +205,12 @@ export default function Home() {
       </div>
     );
   };
-
+  const startFunctions = async () => {
+    await connectWallet();
+    await getBalanceOfCryptoDevTokens();
+    await getTotalTokenMinted();
+    await getTokensToBeClaimed();
+  };
   useEffect(() => {
     if (!walletConnected) {
       web3ModalRef.current = new Web3Modal({
@@ -208,10 +218,7 @@ export default function Home() {
         providerOptions: {},
         disableInjectedProvider: false,
       });
-      connectWallet();
-      getBalanceOfCryptoDevTokens();
-      getTotalTokenMinted();
-      getTokensToBeClaimed();
+      startFunctions();
     }
   }, []);
   return (
@@ -245,10 +252,7 @@ export default function Home() {
           )}
         </div>
         <div>
-          <img
-            className={styles.image}
-            src="./0.svg"
-          />
+          <img className={styles.image} src="./0.svg" />
         </div>
       </div>
       <footer className={styles.footer}>
