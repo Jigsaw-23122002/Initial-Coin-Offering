@@ -2,8 +2,8 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "../styles/Home.module.css";
-import Web3Modal, { providers } from "web3modal";
-import { BigNumber, Contract, utils } from "ethers";
+import Web3Modal from "web3modal";
+import { BigNumber, Contract, utils, providers } from "ethers";
 const {
   TOKEN_CONTRACT_ADDRESS,
   TOKEN_CONTRACT_ABI,
@@ -204,7 +204,7 @@ export default function Home() {
   useEffect(() => {
     if (!walletConnected) {
       web3ModalRef.current = new Web3Modal({
-        network: goerli,
+        network: "goerli",
         providerOptions: {},
         disableInjectedProvider: false,
       });
@@ -247,7 +247,7 @@ export default function Home() {
         <div>
           <img
             className={styles.image}
-            src="https://github.com/Jigsaw-23122002/NFT-Collection/blob/main/app/public/cryptodevs/0.svg"
+            src="./0.svg"
           />
         </div>
       </div>
